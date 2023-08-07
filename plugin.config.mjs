@@ -1,6 +1,6 @@
 const hp = 'https://konomi.app/';
-const commonCdn = 'https://cdn.jsdelivr.net/gh/local-bias/kintone-cdn@latest';
-const cdn = 'https://cdn.jsdelivr.net/gh/local-bias/kintone-plugin-template@latest';
+const commonCdn = 'https://kintone-plugin.konomi.app/common';
+const cdn = 'https://kintone-plugin.konomi.app/toc';
 const localhost = 'https://127.0.0.1:5500';
 
 /** @type {import('./src/types/plugin-config').PluginConfig} */
@@ -11,28 +11,28 @@ export default {
       version: '1.0.0',
       type: 'APP',
       name: {
-        en: 'kintone-plugin-template',
-        ja: 'プラグインテンプレート',
-        zh: '插件模板',
+        en: 'Table of Contents Plugin',
+        ja: '目次プラグイン',
+        zh: '目录插件',
       },
       description: {
-        en: 'kintone-plugin-template',
-        ja: 'プラグインの説明をここに記載します',
-        zh: '插件模板',
+        en: 'Add a table of contents to the record editing screen and enable scrolling to any section.',
+        ja: 'レコード編集画面に目次を追加し、任意のセクションへスクロールできるようにします',
+        zh: '在记录编辑界面添加目录，并实现可以滚动到任意部分。',
       },
       icon: 'icon.png',
       homepage_url: { ja: hp, en: hp },
       desktop: {
-        js: [`${commonCdn}/dist/desktop.js`],
+        js: [`${commonCdn}/desktop.js`],
         css: [],
       },
       mobile: {
-        js: [`${commonCdn}/dist/desktop.js`],
+        js: [`${commonCdn}/desktop.js`],
         css: [],
       },
       config: {
         html: 'config.html',
-        js: [`${commonCdn}/dist/config.js`],
+        js: [`${commonCdn}/config.js`],
         css: [],
         required_params: [],
       },
@@ -43,9 +43,9 @@ export default {
       config: { js: [`${localhost}/dist/dev/config/index.js`] },
     },
     prod: {
-      desktop: { js: [`${cdn}/cdn/desktop.js`] },
-      mobile: { js: [`${cdn}/cdn/desktop.js`] },
-      config: { js: [`${cdn}/cdn/config.js`] },
+      desktop: { js: [`${cdn}/desktop.js`] },
+      mobile: { js: [`${cdn}/desktop.js`] },
+      config: { js: [`${cdn}/config.js`] },
     },
     standalone: {
       desktop: { js: ['desktop.js'] },

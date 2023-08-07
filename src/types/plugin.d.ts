@@ -2,10 +2,9 @@ declare namespace kintone {
   namespace plugin {
     /** プラグインがアプリ単位で保存する設定情報🔌 */
     type Storage = {
-      conditions: Condition[];
+      headings: Heading[];
     };
 
-    /** プラグインの制御単位の設定情報🔌 */
-    type Condition = { fields: string[] };
+    type Heading = { spaceId: string; label: string };
   }
 }

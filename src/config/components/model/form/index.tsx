@@ -1,17 +1,24 @@
 import React, { FCX } from 'react';
 import styled from '@emotion/styled';
 
-import FieldsForm from './form-fields';
-import DeleteButton from './condition-delete-button';
+import HeadingsForm from './form-headings';
+import {
+  PluginFormSection,
+  PluginFormTitle,
+  PluginFormDescription,
+} from '@konomi-app/kintone-utility-component';
 
 const Component: FCX = ({ className }) => {
   return (
     <div {...{ className }}>
-      <div>
-        <h3>対象フィールド</h3>
-        <FieldsForm />
-      </div>
-      <DeleteButton />
+      <PluginFormSection>
+        <PluginFormTitle>目次設定</PluginFormTitle>
+        <PluginFormDescription>目次に表示する見出しを設定します。</PluginFormDescription>
+        <PluginFormDescription last>
+          対象となるスペースIDと、表示する見出しのラベルを入力してください。
+        </PluginFormDescription>
+        <HeadingsForm />
+      </PluginFormSection>
     </div>
   );
 };

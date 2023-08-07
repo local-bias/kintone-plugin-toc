@@ -7,7 +7,6 @@ import React, { FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 import Footer from './components/model/footer';
 import Form from './components/model/form';
-import Sidebar from './components/model/sidebar';
 
 const Component: FC = () => (
   <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
@@ -15,8 +14,7 @@ const Component: FC = () => (
       <PluginErrorBoundary>
         <SnackbarProvider maxSnack={1}>
           <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
-            <PluginLayout>
-              <Sidebar />
+            <PluginLayout singleCondition>
               <PluginContent>
                 <Form />
               </PluginContent>

@@ -1,8 +1,8 @@
 import { PLUGIN_ID } from '@/lib/global';
-import { createConfig, getConditionField, getUpdatedStorage } from '@/lib/plugin';
+import { createConfig } from '@/lib/plugin';
 import { restoreStorage } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
-import { atom, selector, selectorFamily } from 'recoil';
+import { DefaultValue, atom, selector } from 'recoil';
 
 const PREFIX = 'plugin';
 
@@ -16,55 +16,19 @@ export const loadingState = atom<boolean>({
   default: false,
 });
 
-export const tabIndexState = atom<number>({
-  key: `${PREFIX}tabIndexState`,
-  default: 0,
-});
-
-export const conditionsState = selector<kintone.plugin.Condition[]>({
-  key: `${PREFIX}conditionsState`,
+export const headingsState = selector<kintone.plugin.Heading[]>({
+  key: `${PREFIX}headingsState`,
   get: ({ get }) => {
-    const storage = get(storageState);
-    return storage?.conditions ?? [];
+    const pluginConfig = get(storageState);
+    return pluginConfig.headings;
   },
-});
-
-export const conditionState = selectorFamily<kintone.plugin.Condition | null, number>({
-  key: `${PREFIX}conditionState`,
-  get:
-    (conditionIndex) =>
-    ({ get }) => {
-      const storage = get(storageState);
-      return storage.conditions[conditionIndex] ?? null;
-    },
-  set:
-    (conditionIndex) =>
-    ({ set }, newValue) => {
-      set(storageState, (current) =>
-        produce(current, (draft) => {
-          draft.conditions[conditionIndex] = newValue as kintone.plugin.Condition;
-        })
-      );
-    },
-});
-
-export const fieldsState = selector<string[]>({
-  key: `${PREFIX}fieldsState`,
-  get: ({ get }) => {
-    const conditionIndex = get(tabIndexState);
-    return getConditionField(get(storageState), {
-      conditionIndex,
-      key: 'fields',
-      defaultValue: [''],
-    });
-  },
-  set: ({ get, set }, newValue) => {
-    const conditionIndex = get(tabIndexState);
+  set: ({ set }, newValue) => {
     set(storageState, (current) =>
-      getUpdatedStorage(current, {
-        conditionIndex,
-        key: 'fields',
-        value: newValue as string[],
+      produce(current, (draft) => {
+        if (newValue instanceof DefaultValue) {
+          return;
+        }
+        draft.headings = newValue;
       })
     );
   },

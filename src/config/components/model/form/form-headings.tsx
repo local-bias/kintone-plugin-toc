@@ -5,20 +5,32 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { produce } from 'immer';
 
-import { appFieldsState } from '../../../states/kintone';
-import { fieldsState } from '../../../states/plugin';
+import { appSpacesState } from '../../../states/kintone';
+import { headingsState } from '../../../states/plugin';
 import styled from '@emotion/styled';
 
 const Component: FCX = ({ className }) => {
-  const selectedFields = useRecoilValue(fieldsState);
-  const fields = useRecoilValue(appFieldsState);
+  const headings = useRecoilValue(headingsState);
+  const spaces = useRecoilValue(appSpacesState);
 
-  const onFieldChange = useRecoilCallback(
+  const onHeadingSpaceIdChange = useRecoilCallback(
     ({ set }) =>
       (rowIndex: number, value: string) => {
-        set(fieldsState, (current) =>
+        set(headingsState, (current) =>
           produce(current, (draft) => {
-            draft[rowIndex] = value;
+            draft[rowIndex].spaceId = value;
+          })
+        );
+      },
+    []
+  );
+
+  const onHeadingLabelState = useRecoilCallback(
+    ({ set }) =>
+      (rowIndex: number, value: string) => {
+        set(headingsState, (current) =>
+          produce(current, (draft) => {
+            draft[rowIndex].label = value;
           })
         );
       },
@@ -28,9 +40,12 @@ const Component: FCX = ({ className }) => {
   const addField = useRecoilCallback(
     ({ set }) =>
       (rowIndex: number) => {
-        set(fieldsState, (current) =>
+        set(headingsState, (current) =>
           produce(current, (draft) => {
-            draft.splice(rowIndex + 1, 0, '');
+            draft.splice(rowIndex + 1, 0, {
+              spaceId: '',
+              label: '',
+            });
           })
         );
       },
@@ -40,7 +55,7 @@ const Component: FCX = ({ className }) => {
   const removeField = useRecoilCallback(
     ({ set }) =>
       (rowIndex: number) => {
-        set(fieldsState, (current) =>
+        set(headingsState, (current) =>
           produce(current, (draft) => {
             draft.splice(rowIndex, 1);
           })
@@ -51,25 +66,33 @@ const Component: FCX = ({ className }) => {
 
   return (
     <div className={className}>
-      {selectedFields.map((value, i) => (
+      {headings.map((heading, i) => (
         <div key={i} className='row'>
           <Autocomplete
-            value={fields.find((field) => field.code === value) ?? null}
+            value={spaces.find((field) => field.elementId === heading.spaceId) ?? null}
             sx={{ width: '350px' }}
-            options={fields}
-            isOptionEqualToValue={(option, v) => option.code === v.code}
-            getOptionLabel={(option) => `${option.label}(${option.code})`}
-            onChange={(_, field) => onFieldChange(i, field?.code ?? '')}
+            options={spaces}
+            isOptionEqualToValue={(option, v) => option.elementId === v.elementId}
+            getOptionLabel={(option) => `${option.elementId}`}
+            onChange={(_, field) => onHeadingSpaceIdChange(i, field?.elementId ?? '')}
             renderInput={(params) => (
               <TextField {...params} label='対象フィールド' variant='outlined' color='primary' />
             )}
+          />
+          <TextField
+            sx={{ width: '350px' }}
+            label='ラベル'
+            variant='outlined'
+            color='primary'
+            value={heading.label}
+            onChange={(e) => onHeadingLabelState(i, e.target.value)}
           />
           <Tooltip title='フィールドを追加する'>
             <IconButton size='small' onClick={() => addField(i)}>
               <AddIcon fontSize='small' />
             </IconButton>
           </Tooltip>
-          {selectedFields.length > 1 && (
+          {headings.length > 1 && (
             <Tooltip title='このフィールドを削除する'>
               <IconButton size='small' onClick={() => removeField(i)}>
                 <DeleteIcon fontSize='small' />
