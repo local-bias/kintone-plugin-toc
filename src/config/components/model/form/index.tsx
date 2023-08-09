@@ -2,6 +2,8 @@ import React, { FCX } from 'react';
 import styled from '@emotion/styled';
 
 import HeadingsForm from './form-headings';
+import TocTitleForm from './form-toc-title';
+import MaxWidthForm from './form-max-width';
 import {
   PluginFormSection,
   PluginFormTitle,
@@ -11,6 +13,19 @@ import {
 const Component: FCX = ({ className }) => {
   return (
     <div {...{ className }}>
+      <PluginFormSection>
+        <PluginFormTitle>目次のタイトル</PluginFormTitle>
+        <PluginFormDescription last>目次のタイトルを設定します。</PluginFormDescription>
+        <TocTitleForm />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>目次の幅の最大値</PluginFormTitle>
+        <PluginFormDescription>許容する目次の幅の最大値を設定してください。</PluginFormDescription>
+        <PluginFormDescription last>
+          目次の幅は、設定した最大値を超えないように自動的に調整されます。
+        </PluginFormDescription>
+        <MaxWidthForm />
+      </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>目次設定</PluginFormTitle>
         <PluginFormDescription>目次に表示する見出しを設定します。</PluginFormDescription>

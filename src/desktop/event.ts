@@ -51,6 +51,9 @@ export default (listener: KintoneEventListener) => {
         return event;
       }
 
+      const { tocTitle = '目次', maxWidth = 250 } = config;
+      const minWidth = maxWidth < 160 ? maxWidth : 160;
+
       const toc = document.createElement('aside');
       toc.id = TOC_ID;
       toc.classList.add(css`
@@ -60,13 +63,12 @@ export default (listener: KintoneEventListener) => {
           top: 130px;
           padding: 16px;
           > div {
-            min-width: 200px;
-            max-width: 250px;
+            min-width: ${minWidth}px;
+            max-width: ${maxWidth}px;
             overflow: auto;
             padding: 16px 24px 24px;
             border: 1px solid #0003;
             border-radius: 4px;
-            background-color: #fff2;
           }
         }
         .ribbit-toc-title {
@@ -92,7 +94,7 @@ export default (listener: KintoneEventListener) => {
       toc.innerHTML = `
         <div>
           <div>
-            <div class="ribbit-toc-title"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2Z"/></svg>目次</div>
+            <div class="ribbit-toc-title"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2Z"/></svg>${tocTitle}</div>
             <ul>
               ${config.headings
                 .map(
