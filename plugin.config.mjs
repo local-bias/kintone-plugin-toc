@@ -1,14 +1,14 @@
 const hp = 'https://konomi.app/';
 const commonCdn = 'https://kintone-plugin.konomi.app/common';
 const cdn = 'https://kintone-plugin.konomi.app/toc';
-const localhost = 'https://127.0.0.1:5500';
+const localhost = 'https://127.0.0.1:57590';
 
 /** @type {import('./src/types/plugin-config').PluginConfig} */
 export default {
   manifest: {
     base: {
       manifest_version: 1,
-      version: '1.0.0',
+      version: '1.2.0',
       type: 'APP',
       name: {
         en: 'Table of Contents Plugin',
