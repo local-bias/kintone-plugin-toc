@@ -4,6 +4,7 @@ import { getSpaceElement } from '@lb-ribbit/kintone-xapp';
 import { PLUGIN_ID } from '@/lib/global';
 import { css } from '@emotion/css';
 import { listener } from '@/lib/listener';
+import { DEFAULT_COLOR } from '@/lib/static';
 
 const TOC_ID = 'ribbit-toc-plugin-root';
 
@@ -30,7 +31,7 @@ listener.add(
     `);
 
     for (const heading of config.headings) {
-      const { spaceId, label } = heading;
+      const { spaceId, label, color = DEFAULT_COLOR } = heading;
       const spaceElement = getSpaceElement(spaceId);
       if (!spaceElement) {
         console.log('スペースが見つかりませんでした');
@@ -41,7 +42,7 @@ listener.add(
         font-size: 20px;
         font-weight: 600;
         margin: 32px 0 0;
-        border-left: 4px solid #0006;
+        border-left: 4px solid ${color};
         padding-left: 16px;
       `}>${label}</h2>`;
     }

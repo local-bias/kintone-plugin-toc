@@ -4,5 +4,5 @@
 export const createConfig = (): kintone.plugin.Storage => ({
   tocTitle: '目次',
   maxWidth: 250,
-  headings: [{ spaceId: '', label: '' }],
+  headings: [{ spaceId: '', label: '', color: '' }],
 });

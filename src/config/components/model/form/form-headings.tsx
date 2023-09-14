@@ -8,6 +8,7 @@ import { produce } from 'immer';
 import { appSpacesState } from '../../../states/kintone';
 import { headingsState } from '../../../states/plugin';
 import styled from '@emotion/styled';
+import { DEFAULT_COLOR } from '@/lib/static';
 
 const Component: FCX = ({ className }) => {
   const headings = useRecoilValue(headingsState);
@@ -31,6 +32,18 @@ const Component: FCX = ({ className }) => {
         set(headingsState, (current) =>
           produce(current, (draft) => {
             draft[rowIndex].label = value;
+          })
+        );
+      },
+    []
+  );
+
+  const onHeadingColorChange = useRecoilCallback(
+    ({ set }) =>
+      (rowIndex: number, value: string) => {
+        set(headingsState, (current) =>
+          produce(current, (draft) => {
+            draft[rowIndex].color = value;
           })
         );
       },
@@ -76,7 +89,7 @@ const Component: FCX = ({ className }) => {
             getOptionLabel={(option) => `${option.elementId}`}
             onChange={(_, field) => onHeadingSpaceIdChange(i, field?.elementId ?? '')}
             renderInput={(params) => (
-              <TextField {...params} label='対象フィールド' variant='outlined' color='primary' />
+              <TextField {...params} label='対象スペース' variant='outlined' color='primary' />
             )}
           />
           <TextField
@@ -86,6 +99,15 @@ const Component: FCX = ({ className }) => {
             color='primary'
             value={heading.label}
             onChange={(e) => onHeadingLabelState(i, e.target.value)}
+          />
+          <TextField
+            type='color'
+            sx={{ width: '120px' }}
+            label='ヘッダーの色'
+            variant='outlined'
+            color='primary'
+            value={heading.color ?? DEFAULT_COLOR}
+            onChange={(e) => onHeadingColorChange(i, e.target.value)}
           />
           <Tooltip title='フィールドを追加する'>
             <IconButton size='small' onClick={() => addField(i)}>

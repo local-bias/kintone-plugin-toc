@@ -7,6 +7,6 @@ declare namespace kintone {
       headings: Heading[];
     };
 
-    type Heading = { spaceId: string; label: string };
+    type Heading = { spaceId: string; label: string; color?: string };
   }
 }
