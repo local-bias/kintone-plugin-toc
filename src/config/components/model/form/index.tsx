@@ -8,7 +8,7 @@ import {
   PluginFormSection,
   PluginFormTitle,
   PluginFormDescription,
-} from '@konomi-app/kintone-utility-component';
+} from '@konomi-app/kintone-utilities-react';
 
 const Component: FCX = ({ className }) => {
   return (
