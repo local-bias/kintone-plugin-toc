@@ -1,7 +1,5 @@
-import { createConfig } from '@/lib/plugin';
-import { restoreStorage } from '@konomi-app/kintone-utilities';
+import { restorePluginConfig } from '@/lib/plugin';
 import { getSpaceElement } from '@lb-ribbit/kintone-xapp';
-import { PLUGIN_ID } from '@/lib/global';
 import { css } from '@emotion/css';
 import { listener } from '@/lib/listener';
 import { DEFAULT_COLOR } from '@/lib/static';
@@ -11,7 +9,7 @@ const TOC_ID = 'ribbit-toc-plugin-root';
 listener.add(
   ['app.record.detail.show', 'app.record.create.show', 'app.record.edit.show'],
   async (event) => {
-    const config = restoreStorage<Plugin.Config>(PLUGIN_ID) ?? createConfig();
+    const config = restorePluginConfig();
 
     if (!config.headings.length) {
       return event;

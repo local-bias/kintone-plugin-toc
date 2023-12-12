@@ -7,6 +7,7 @@ declare namespace Plugin {
 
   /** プラグインがアプリ単位で保存する設定情報🔌 */
   type ConfigV1 = {
+    version: 1;
     tocTitle?: string;
     maxWidth?: number;
     headings: { spaceId: string; label: string; color?: string }[];
