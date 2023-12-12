@@ -5,6 +5,7 @@ import {
   PluginContent,
   PluginLayout,
   PluginConfigProvider,
+  Notification,
 } from '@konomi-app/kintone-utilities-react';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { SnackbarProvider } from 'notistack';
@@ -12,7 +13,6 @@ import React, { FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 import Footer from './components/model/footer';
 import Form from './components/model/form';
-import Announcement from './components/model/announcement';
 import config from '../../plugin.config.mjs';
 
 const Component: FC = () => (
@@ -20,7 +20,7 @@ const Component: FC = () => (
     <RecoilRoot>
       <PluginErrorBoundary>
         <PluginConfigProvider config={config}>
-          <Announcement />
+          <Notification />
           <SnackbarProvider maxSnack={1}>
             <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
               <PluginLayout singleCondition>
