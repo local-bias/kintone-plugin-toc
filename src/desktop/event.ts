@@ -11,7 +11,7 @@ const TOC_ID = 'ribbit-toc-plugin-root';
 listener.add(
   ['app.record.detail.show', 'app.record.create.show', 'app.record.edit.show'],
   async (event) => {
-    const config = restoreStorage<kintone.plugin.Storage>(PLUGIN_ID) ?? createConfig();
+    const config = restoreStorage<Plugin.Config>(PLUGIN_ID) ?? createConfig();
 
     if (!config.headings.length) {
       return event;

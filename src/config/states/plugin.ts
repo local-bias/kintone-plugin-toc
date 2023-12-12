@@ -6,9 +6,9 @@ import { DefaultValue, atom, selector } from 'recoil';
 
 const PREFIX = 'plugin';
 
-export const storageState = atom<kintone.plugin.Storage>({
+export const storageState = atom<Plugin.Config>({
   key: `${PREFIX}storageState`,
-  default: restoreStorage<kintone.plugin.Storage>(PLUGIN_ID) ?? createConfig(),
+  default: restoreStorage<Plugin.Config>(PLUGIN_ID) ?? createConfig(),
 });
 
 export const loadingState = atom<boolean>({
@@ -52,7 +52,7 @@ export const maxWidthState = selector<number>({
   },
 });
 
-export const headingsState = selector<kintone.plugin.Heading[]>({
+export const headingsState = selector<Plugin.Heading[]>({
   key: `${PREFIX}headingsState`,
   get: ({ get }) => {
     const pluginConfig = get(storageState);

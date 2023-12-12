@@ -1,12 +1,14 @@
-declare namespace kintone {
-  namespace plugin {
-    /** プラグインがアプリ単位で保存する設定情報🔌 */
-    type Storage = {
-      tocTitle?: string;
-      maxWidth?: number;
-      headings: Heading[];
-    };
+declare namespace Plugin {
+  type Config = ConfigV1;
 
-    type Heading = { spaceId: string; label: string; color?: string };
-  }
+  type AnyConfig = ConfigV1; // | ConfigV2 | ...
+
+  type Heading = Config['headings'][number];
+
+  /** プラグインがアプリ単位で保存する設定情報🔌 */
+  type ConfigV1 = {
+    tocTitle?: string;
+    maxWidth?: number;
+    headings: { spaceId: string; label: string; color?: string }[];
+  };
 }
