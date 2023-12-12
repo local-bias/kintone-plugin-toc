@@ -1,54 +1,18 @@
-import { IconButton, TextField, Tooltip } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import React, { FC, memo } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { produce } from 'immer';
 import SpaceSelect from './space-select';
+import ColorForm from './color';
+import LabelForm from './label';
 
-import { headingsState } from '../../../../states/plugin';
-import { DEFAULT_COLOR } from '@/lib/static';
+import { headingsLengthState, headingsState } from '../../../../states/plugin';
 
 const Component: FC = () => {
-  const headings = useRecoilValue(headingsState);
-
-  const createHeadingSpaceIdChangeHandler = useRecoilCallback(
-    ({ set }) =>
-      (rowIndex: number) => {
-        return (value: string) => {
-          set(headingsState, (current) =>
-            produce(current, (draft) => {
-              draft[rowIndex].spaceId = value;
-            })
-          );
-        };
-      },
-    []
-  );
-
-  const onHeadingLabelState = useRecoilCallback(
-    ({ set }) =>
-      (rowIndex: number, value: string) => {
-        set(headingsState, (current) =>
-          produce(current, (draft) => {
-            draft[rowIndex].label = value;
-          })
-        );
-      },
-    []
-  );
-
-  const onHeadingColorChange = useRecoilCallback(
-    ({ set }) =>
-      (rowIndex: number, value: string) => {
-        set(headingsState, (current) =>
-          produce(current, (draft) => {
-            draft[rowIndex].color = value;
-          })
-        );
-      },
-    []
-  );
+  const length = useRecoilValue(headingsLengthState);
+  const isMultiple = length > 1;
 
   const addField = useRecoilCallback(
     ({ set }) =>
@@ -79,35 +43,17 @@ const Component: FC = () => {
 
   return (
     <div className='flex flex-col gap-4'>
-      {headings.map((heading, i) => (
+      {new Array(length).fill('').map((_, i) => (
         <div key={i} className='flex items-center gap-2'>
-          <SpaceSelect
-            spaceId={heading.spaceId}
-            onHeadingSpaceIdChange={createHeadingSpaceIdChangeHandler(i)}
-          />
-          <TextField
-            sx={{ width: '350px' }}
-            label='ラベル'
-            variant='outlined'
-            color='primary'
-            value={heading.label}
-            onChange={(e) => onHeadingLabelState(i, e.target.value)}
-          />
-          <TextField
-            type='color'
-            sx={{ width: '120px' }}
-            label='ヘッダーの色'
-            variant='outlined'
-            color='primary'
-            value={heading.color ?? DEFAULT_COLOR}
-            onChange={(e) => onHeadingColorChange(i, e.target.value)}
-          />
+          <SpaceSelect index={i} />
+          <LabelForm index={i} />
+          <ColorForm index={i} />
           <Tooltip title='フィールドを追加する'>
             <IconButton size='small' onClick={() => addField(i)}>
               <AddIcon fontSize='small' />
             </IconButton>
           </Tooltip>
-          {headings.length > 1 && (
+          {isMultiple && (
             <Tooltip title='このフィールドを削除する'>
               <IconButton size='small' onClick={() => removeField(i)}>
                 <DeleteIcon fontSize='small' />

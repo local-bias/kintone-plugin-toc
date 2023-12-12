@@ -1,15 +1,25 @@
 import { appSpacesState } from '@/config/states/kintone';
+import { getHeadingSpaceIdState, headingRowState } from '@/config/states/plugin';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import React, { FC, Suspense } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilCallback, useRecoilValue } from 'recoil';
 
 type Props = {
-  spaceId: string;
-  onHeadingSpaceIdChange: (value: string) => void;
+  index: number;
 };
 
-const Component: FC<Props> = ({ spaceId, onHeadingSpaceIdChange }) => {
+const Component: FC<Props> = ({ index }) => {
   const spaces = useRecoilValue(appSpacesState);
+  const spaceId = useRecoilValue(getHeadingSpaceIdState(index));
+
+  const onChange = useRecoilCallback(
+    ({ set }) =>
+      (value: string) => {
+        set(headingRowState(index), (current) => ({ ...current, spaceId: value }));
+      },
+    [index]
+  );
+
   return (
     <Autocomplete
       value={spaces.find((field) => field.elementId === spaceId) ?? null}
@@ -17,7 +27,7 @@ const Component: FC<Props> = ({ spaceId, onHeadingSpaceIdChange }) => {
       options={spaces}
       isOptionEqualToValue={(option, v) => option.elementId === v.elementId}
       getOptionLabel={(option) => `${option.elementId}`}
-      onChange={(_, field) => onHeadingSpaceIdChange(field?.elementId ?? '')}
+      onChange={(_, field) => onChange(field?.elementId ?? '')}
       renderInput={(params) => (
         <TextField {...params} label='対象スペース' variant='outlined' color='primary' />
       )}
