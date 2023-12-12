@@ -1,27 +1,27 @@
-import { Autocomplete, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
-import React, { FC, FCX, memo, Suspense } from 'react';
+import { IconButton, TextField, Tooltip } from '@mui/material';
+import React, { FC, memo } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { produce } from 'immer';
+import SpaceSelect from './space-select';
 
-import { appSpacesState } from '../../../states/kintone';
-import { headingsState } from '../../../states/plugin';
-import styled from '@emotion/styled';
+import { headingsState } from '../../../../states/plugin';
 import { DEFAULT_COLOR } from '@/lib/static';
 
-const Component: FCX = ({ className }) => {
+const Component: FC = () => {
   const headings = useRecoilValue(headingsState);
-  const spaces = useRecoilValue(appSpacesState);
 
-  const onHeadingSpaceIdChange = useRecoilCallback(
+  const createHeadingSpaceIdChangeHandler = useRecoilCallback(
     ({ set }) =>
-      (rowIndex: number, value: string) => {
-        set(headingsState, (current) =>
-          produce(current, (draft) => {
-            draft[rowIndex].spaceId = value;
-          })
-        );
+      (rowIndex: number) => {
+        return (value: string) => {
+          set(headingsState, (current) =>
+            produce(current, (draft) => {
+              draft[rowIndex].spaceId = value;
+            })
+          );
+        };
       },
     []
   );
@@ -78,19 +78,12 @@ const Component: FCX = ({ className }) => {
   );
 
   return (
-    <div className={className}>
+    <div className='flex flex-col gap-4'>
       {headings.map((heading, i) => (
-        <div key={i} className='row'>
-          <Autocomplete
-            value={spaces.find((field) => field.elementId === heading.spaceId) ?? null}
-            sx={{ width: '350px' }}
-            options={spaces}
-            isOptionEqualToValue={(option, v) => option.elementId === v.elementId}
-            getOptionLabel={(option) => `${option.elementId}`}
-            onChange={(_, field) => onHeadingSpaceIdChange(i, field?.elementId ?? '')}
-            renderInput={(params) => (
-              <TextField {...params} label='対象スペース' variant='outlined' color='primary' />
-            )}
+        <div key={i} className='flex items-center gap-2'>
+          <SpaceSelect
+            spaceId={heading.spaceId}
+            onHeadingSpaceIdChange={createHeadingSpaceIdChangeHandler(i)}
           />
           <TextField
             sx={{ width: '350px' }}
@@ -127,39 +120,4 @@ const Component: FCX = ({ className }) => {
   );
 };
 
-const Placeholder: FCX = ({ className }) => (
-  <div className={className}>
-    {new Array(3).fill('').map((_, i) => (
-      <div key={i} className='row'>
-        <Skeleton variant='rounded' width={360} height={56} />
-        <Skeleton variant='circular' width={24} height={24} />
-        <Skeleton variant='circular' width={24} height={24} />
-      </div>
-    ))}
-  </div>
-);
-
-const Styling = (Component: FC) => styled(Component)`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-
-  .row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-`;
-
-const StyledComponent = Styling(Component);
-const StyledPlaceHolder = Styling(Placeholder);
-
-const Container: FC = () => {
-  return (
-    <Suspense fallback={<StyledPlaceHolder />}>
-      <StyledComponent />
-    </Suspense>
-  );
-};
-
-export default memo(Container);
+export default memo(Component);
