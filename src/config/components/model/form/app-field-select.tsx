@@ -13,7 +13,7 @@ type ContainerProps = {
 type Props = {
   value: kintoneAPI.FieldProperty | null;
   fields: kintoneAPI.FieldProperty[];
-  onFieldChange: (_: any, field: kintoneAPI.FieldProperty | null) => void;
+  onFieldChange: (_: unknown, field: kintoneAPI.FieldProperty | null) => void;
 };
 
 const Component: FC<Props> = ({ fields, value, onFieldChange }) => (
@@ -36,7 +36,7 @@ const Container: FC<ContainerProps> = (props) => {
   const value = fields.find((field) => field.code === props.fieldCode) ?? null;
 
   const onFieldChange = useCallback(
-    (_: any, field: kintoneAPI.FieldProperty | null) => {
+    (_: unknown, field: kintoneAPI.FieldProperty | null) => {
       props.onChange(field?.code ?? '');
     },
     [props.onChange]
