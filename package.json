@@ -4,17 +4,10 @@
   "author": "ribbit",
   "license": "MIT",
   "scripts": {
-    "init": "node scripts/marge-json.mjs dev && kintone-plugin-packer --out dist/plugin-dev.zip plugin && node scripts/rename-ppk.mjs",
-    "build": "node scripts/marge-json.mjs prod && concurrently \"npm:build:*\" && kintone-plugin-packer --out dist/plugin.zip --ppk dist/private.ppk plugin",
-    "build:js": "kbuild prod plugin --prod-root plugin",
-    "build:css": "tailwindcss -i ./src/styles/global.css -o ./plugin/config.css -c ./tailwind.config.config.mjs --minify && tailwindcss -i ./src/styles/global.css -o ./plugin/desktop.css -c ./tailwind.config.desktop.mjs --minify",
-    "standalone": "node scripts/marge-json.mjs standalone && concurrently \"npm:build:*\" && kintone-plugin-packer --out dist/plugin-standalone.zip --ppk dist/private.ppk plugin",
-    "dev": "node scripts/marge-json.mjs dev && kintone-plugin-packer --out dist/plugin-dev.zip --ppk dist/private.ppk plugin && concurrently \"npm:dev:*\"",
-    "dev:js": "kbuild dev plugin",
-    "dev:css-config": "tailwindcss -i ./src/styles/global.css -o ./dist/dev/config.css -c ./tailwind.config.config.mjs -w",
-    "dev:css-desktop": "tailwindcss -i ./src/styles/global.css -o ./dist/dev/desktop.css -c ./tailwind.config.desktop.mjs -w",
-    "dev:upload": "node scripts/upload.mjs",
-    "lint": "eslint ./src --cache --ext .js,.ts,.tsx"
+    "init": "plugin init && plugin genkey",
+    "build": "plugin build && plugin zip",
+    "standalone": "plugin build && plugin zip --env standalone",
+    "dev": "plugin dev"
   },
   "browser": {
     "path": false
@@ -30,6 +23,7 @@
     "@kintone/plugin-packer": "8.0.4",
     "@kintone/plugin-uploader": "9.0.3",
     "@kintone/rest-api-client": "5.2.0",
+    "@konomi-app/k2": "^1.3.0",
     "@konomi-app/kbuild": "^3.1.2",
     "@konomi-app/kintone-utilities": "^5.6.4",
     "@konomi-app/ui": "^2.2.4",
