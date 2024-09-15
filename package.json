@@ -37,6 +37,7 @@
   "devDependencies": {
     "@kintone/dts-gen": "8.0.12",
     "@konomi-app/k2": "^1.4.7",
+    "@konomi-app/prettier-config": "^1.1.2",
     "@types/luxon": "3.4.2",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
@@ -45,13 +46,5 @@
     "tailwindcss": "^3.4.10",
     "typescript": "5.5.4"
   },
-  "prettier": {
-    "printWidth": 100,
-    "arrowParens": "always",
-    "singleQuote": true,
-    "jsxSingleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "endOfLine": "lf"
-  }
+  "prettier": "@konomi-app/prettier-config"
 }
