@@ -10,7 +10,7 @@ import {
   PluginFormDescription,
 } from '@konomi-app/kintone-utilities-react';
 
-const Component: FCX = ({ className }) => {
+const FormContainer: FCX = ({ className }) => {
   return (
     <div {...{ className }}>
       <PluginFormSection>
@@ -38,7 +38,7 @@ const Component: FCX = ({ className }) => {
   );
 };
 
-const StyledComponent = styled(Component)`
+const StyledFormContainer = styled(FormContainer)`
   padding: 0 16px;
   > div {
     padding: 8px 8px 8px 16px;
@@ -49,4 +49,4 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-export default StyledComponent;
+export default StyledFormContainer;
