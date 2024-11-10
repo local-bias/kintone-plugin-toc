@@ -15,7 +15,7 @@ import Footer from './components/model/footer';
 import Form from './components/model/form';
 import config from '../../plugin.config.mjs';
 
-const Component: FC = () => (
+const App: FC = () => (
   <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
     <RecoilRoot>
       <PluginErrorBoundary>
@@ -44,4 +44,4 @@ const Component: FC = () => (
   </Suspense>
 );
 
-export default Component;
+export default App;
