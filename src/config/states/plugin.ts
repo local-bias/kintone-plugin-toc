@@ -1,128 +1,92 @@
 import { restorePluginConfig } from '@/lib/plugin';
-import { produce } from 'immer';
-import { DefaultValue, atom, selector, selectorFamily } from 'recoil';
+import { atom } from 'jotai';
+import { atomFamily } from 'jotai/utils';
+import type { PluginConfig, PluginCondition } from '@/schema/plugin-config';
 
-const PREFIX = 'plugin';
+export const storageAtom = atom<PluginConfig>(restorePluginConfig());
 
-export const storageState = atom<Plugin.Config>({
-  key: `${PREFIX}storageState`,
-  default: restorePluginConfig(),
-});
+export const loadingAtom = atom<boolean>(false);
 
-export const loadingState = atom<boolean>({
-  key: `${PREFIX}loadingState`,
-  default: false,
-});
+export const commonAtom = atom(
+  (get) => get(storageAtom).common,
+  (get, set, newValue: PluginConfig['common']) => {
+    const current = get(storageAtom);
+    set(storageAtom, { ...current, common: newValue });
+  }
+);
 
-export const tocTitleState = selector<string>({
-  key: `${PREFIX}tocTitleState`,
-  get: ({ get }) => {
-    const pluginConfig = get(storageState);
-    return pluginConfig.tocTitle ?? '目次';
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        if (newValue instanceof DefaultValue) {
-          return;
-        }
-        draft.tocTitle = newValue;
-      })
-    );
-  },
-});
+export const typeAtom = atom(
+  (get) => get(commonAtom).type,
+  (get, set, newValue: PluginConfig['common']['type']) => {
+    const current = get(commonAtom);
+    set(commonAtom, { ...current, type: newValue });
+  }
+);
 
-export const maxWidthState = selector<number>({
-  key: `${PREFIX}maxWidthState`,
-  get: ({ get }) => {
-    const pluginConfig = get(storageState);
-    return pluginConfig.maxWidth ?? 250;
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        if (newValue instanceof DefaultValue) {
-          return;
-        }
-        draft.maxWidth = newValue;
-      })
-    );
-  },
-});
+export const tocTitleAtom = atom(
+  (get) => get(commonAtom).tocTitle,
+  (get, set, newValue: string) => {
+    const current = get(commonAtom);
+    set(commonAtom, { ...current, tocTitle: newValue });
+  }
+);
 
-export const headingsState = selector<Plugin.Heading[]>({
-  key: `${PREFIX}headingsState`,
-  get: ({ get }) => {
-    const pluginConfig = get(storageState);
-    return pluginConfig.headings;
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        if (newValue instanceof DefaultValue) {
-          return;
-        }
-        draft.headings = newValue;
-      })
-    );
-  },
-});
+export const maxWidthAtom = atom(
+  (get) => get(commonAtom).maxWidth,
+  (get, set, newValue: number | null) => {
+    const current = get(commonAtom);
+    set(commonAtom, { ...current, maxWidth: newValue });
+  }
+);
 
-export const headingsLengthState = selector<number>({
-  key: `${PREFIX}headingsLengthState`,
-  get: ({ get }) => {
-    const pluginConfig = get(storageState);
-    return pluginConfig.headings.length;
-  },
-});
+export const conditionsAtom = atom(
+  (get) => get(storageAtom).conditions,
+  (get, set, newValue: PluginCondition[]) => {
+    const current = get(storageAtom);
+    set(storageAtom, { ...current, conditions: newValue });
+  }
+);
 
-export const headingRowState = selectorFamily<Plugin.Heading, number>({
-  key: `${PREFIX}headingRowState`,
-  get:
-    (index) =>
-    ({ get }) => {
-      const pluginConfig = get(storageState);
-      return pluginConfig.headings[index];
-    },
-  set:
-    (index) =>
-    ({ set }, newValue) => {
-      set(storageState, (current) =>
-        produce(current, (draft) => {
-          if (newValue instanceof DefaultValue) {
-            return;
-          }
-          draft.headings[index] = newValue;
-        })
-      );
-    },
-});
+export const conditionsLengthAtom = atom((get) => get(conditionsAtom).length);
 
-export const headingPropertyState = selectorFamily<
-  Plugin.Heading[keyof Plugin.Heading],
-  [number, keyof Plugin.Heading]
->({
-  key: `${PREFIX}headingPropertyState`,
-  get:
-    ([index, key]) =>
-    ({ get }) => {
-      const pluginConfig = get(storageState);
-      return pluginConfig.headings[index][key];
-    },
-  set:
-    ([index, key]) =>
-    ({ set }, newValue) => {
-      set(storageState, (current) =>
-        produce(current, (draft) => {
-          if (newValue instanceof DefaultValue) {
-            return;
-          }
-          draft.headings[index][key] = newValue as never;
-        })
-      );
-    },
-});
+export const conditionRowAtom = atomFamily((index: number) =>
+  atom(
+    (get) => get(conditionsAtom)[index],
+    (get, set, newValue: PluginCondition) => {
+      const current = get(conditionsAtom);
+      const updated = [...current];
+      updated[index] = newValue;
+      set(conditionsAtom, updated);
+    }
+  )
+);
 
-export const getHeadingLabelState = (index: number) => headingPropertyState([index, 'label']);
-export const getHeadingColorState = (index: number) => headingPropertyState([index, 'color']);
-export const getHeadingSpaceIdState = (index: number) => headingPropertyState([index, 'spaceId']);
+export const getConditionLabelAtom = atomFamily((index: number) =>
+  atom(
+    (get) => get(conditionRowAtom(index)).label,
+    (get, set, newValue: string) => {
+      const current = get(conditionRowAtom(index));
+      set(conditionRowAtom(index), { ...current, label: newValue });
+    }
+  )
+);
+
+export const getConditionColorAtom = atomFamily((index: number) =>
+  atom(
+    (get) => get(conditionRowAtom(index)).color,
+    (get, set, newValue: string) => {
+      const current = get(conditionRowAtom(index));
+      set(conditionRowAtom(index), { ...current, color: newValue });
+    }
+  )
+);
+
+export const getConditionSpaceIdAtom = atomFamily((index: number) =>
+  atom(
+    (get) => get(conditionRowAtom(index)).spaceId,
+    (get, set, newValue: string) => {
+      const current = get(conditionRowAtom(index));
+      set(conditionRowAtom(index), { ...current, spaceId: newValue });
+    }
+  )
+);
