@@ -1,18 +1,23 @@
-import React, { FCX } from 'react';
 import styled from '@emotion/styled';
-
-import HeadingsForm from './form-headings';
-import TocTitleForm from './form-toc-title';
-import MaxWidthForm from './form-max-width';
 import {
+  PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-  PluginFormDescription,
 } from '@konomi-app/kintone-utilities-react';
+import { FCX } from 'react';
+import HeadingsForm from './form-headings';
+import MaxWidthForm from './form-max-width';
+import TocTitleForm from './form-toc-title';
+import TypeForm from './form-type';
 
 const FormContainer: FCX = ({ className }) => {
   return (
     <div {...{ className }}>
+      <PluginFormSection>
+        <PluginFormTitle>表示タイプ</PluginFormTitle>
+        <PluginFormDescription last>目次をどのように表示するのかを設定します</PluginFormDescription>
+        <TypeForm />
+      </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>目次のタイトル</PluginFormTitle>
         <PluginFormDescription last>目次のタイトルを設定します。</PluginFormDescription>
