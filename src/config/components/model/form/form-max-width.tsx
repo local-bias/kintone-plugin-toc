@@ -1,20 +1,15 @@
-import { InputAdornment, Skeleton, TextField } from '@mui/material';
-import React, { ChangeEventHandler, FC, FCX, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-
-import { maxWidthState } from '../../../states/plugin';
 import styled from '@emotion/styled';
+import { InputAdornment, Skeleton, TextField } from '@mui/material';
+import { useAtom } from 'jotai';
+import { ChangeEventHandler, FC, FCX, memo, Suspense } from 'react';
+import { maxWidthAtom } from '../../../states/plugin';
 
 const Component: FCX = ({ className }) => {
-  const value = useRecoilValue(maxWidthState);
+  const [value, setValue] = useAtom(maxWidthAtom);
 
-  const onChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
-    ({ set }) =>
-      ({ target }) => {
-        set(maxWidthState, Number(target.value));
-      },
-    []
-  );
+  const onChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+    setValue(target.value ? Number(target.value) : null);
+  };
 
   return (
     <div className={className}>
@@ -23,7 +18,7 @@ const Component: FCX = ({ className }) => {
         sx={{ width: '150px' }}
         variant='outlined'
         color='primary'
-        value={value}
+        value={value ?? ''}
         onChange={onChange}
         InputProps={{
           endAdornment: <InputAdornment position='start'>px</InputAdornment>,
