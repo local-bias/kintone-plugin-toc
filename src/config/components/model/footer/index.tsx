@@ -3,16 +3,15 @@ import { storeStorage } from '@konomi-app/kintone-utilities';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
+import { useAtom, useAtomValue } from 'jotai';
 import { useSnackbar } from 'notistack';
-import React, { FC, FCX, useCallback } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { FC, FCX, useCallback } from 'react';
+import { loadingAtom, storageAtom } from '../../../states/plugin';
 
-import { loadingState, storageState } from '../../../states/plugin';
-
+import { PluginFooter } from '@konomi-app/kintone-utilities-react';
 import ExportButton from './export-button';
 import ImportButton from './import-button';
 import ResetButton from './reset-button';
-import { PluginFooter } from '@konomi-app/kintone-utilities-react';
 
 type Props = {
   onSaveButtonClick: () => void;
@@ -20,7 +19,7 @@ type Props = {
 };
 
 const Component: FCX<Props> = ({ className, onSaveButtonClick, onBackButtonClick }) => {
-  const loading = useRecoilValue(loadingState);
+  const loading = useAtomValue(loadingAtom);
 
   return (
     <PluginFooter {...{ className }}>
@@ -63,31 +62,27 @@ const StyledComponent = styled(Component)`
 
 const Container: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const storage = useAtomValue(storageAtom);
+  const [, setLoading] = useAtom(loadingAtom);
 
   const onBackButtonClick = useCallback(() => history.back(), []);
 
-  const onSaveButtonClick = useRecoilCallback(
-    ({ set, snapshot }) =>
-      async () => {
-        set(loadingState, true);
-        try {
-          const storage = await snapshot.getPromise(storageState);
-
-          storeStorage(storage, () => true);
-          enqueueSnackbar('設定を保存しました', {
-            variant: 'success',
-            action: (
-              <Button color='inherit' size='small' variant='outlined' onClick={onBackButtonClick}>
-                プラグイン一覧に戻る
-              </Button>
-            ),
-          });
-        } finally {
-          set(loadingState, false);
-        }
-      },
-    []
-  );
+  const onSaveButtonClick = useCallback(async () => {
+    setLoading(true);
+    try {
+      storeStorage(storage, () => true);
+      enqueueSnackbar('設定を保存しました', {
+        variant: 'success',
+        action: (
+          <Button color='inherit' size='small' variant='outlined' onClick={onBackButtonClick}>
+            プラグイン一覧に戻る
+          </Button>
+        ),
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [storage, setLoading, enqueueSnackbar, onBackButtonClick]);
 
   return <StyledComponent {...{ onSaveButtonClick, onBackButtonClick }} />;
 };
