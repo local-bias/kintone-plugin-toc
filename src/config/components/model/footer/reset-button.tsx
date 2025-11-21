@@ -10,28 +10,25 @@ import {
   Tooltip,
 } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { useRecoilCallback } from 'recoil';
-import { storageState } from '../../../states/plugin';
+import { useSetAtom } from 'jotai';
+import { storageAtom } from '../../../states/plugin';
 import { createConfig } from '@/lib/plugin';
 import { useSnackbar } from 'notistack';
 
 const Component: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState<boolean>(false);
+  const setStorage = useSetAtom(storageAtom);
 
   const onIconButtonClick = useCallback(() => {
     setOpen(true);
   }, []);
 
-  const onDecisionButtonClick = useRecoilCallback(
-    ({ set }) =>
-      () => {
-        set(storageState, createConfig());
-        setOpen(false);
-        enqueueSnackbar('設定をリセットしました', { variant: 'success' });
-      },
-    []
-  );
+  const onDecisionButtonClick = useCallback(() => {
+    setStorage(createConfig());
+    setOpen(false);
+    enqueueSnackbar('設定をリセットしました', { variant: 'success' });
+  }, [setStorage, enqueueSnackbar]);
 
   const onClose = useCallback(() => {
     setOpen(false);
