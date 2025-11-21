@@ -1,21 +1,19 @@
-import { getHeadingColorState, headingRowState } from '@/config/states/plugin';
+import { getConditionColorAtom } from '@/config/states/plugin';
 import { DEFAULT_COLOR } from '@/lib/static';
 import { TextField } from '@mui/material';
-import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { FC, useMemo } from 'react';
 
 type Props = { index: number };
 
 const Component: FC<Props> = ({ index }) => {
-  const color = useRecoilValue(getHeadingColorState(index));
+  const colorAtom = useMemo(() => getConditionColorAtom(index), [index]);
+  const color = useAtomValue(colorAtom);
+  const setColor = useSetAtom(colorAtom);
 
-  const onChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(headingRowState(index), (current) => ({ ...current, color: value }));
-      },
-    [index]
-  );
+  const onChange = (value: string) => {
+    setColor(value);
+  };
 
   return (
     <TextField
@@ -24,7 +22,7 @@ const Component: FC<Props> = ({ index }) => {
       label='ヘッダーの色'
       variant='outlined'
       color='primary'
-      value={color ?? DEFAULT_COLOR}
+      value={color || DEFAULT_COLOR}
       onChange={(e) => onChange(e.target.value)}
     />
   );

@@ -1,24 +1,21 @@
-import { appSpacesState } from '@/config/states/kintone';
-import { getHeadingSpaceIdState, headingRowState } from '@/config/states/plugin';
+import { appSpacesAtom } from '@/config/states/kintone';
+import { getConditionSpaceIdAtom } from '@/config/states/plugin';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
-import React, { FC, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { useAtom, useAtomValue } from 'jotai';
+import { FC, Suspense, useMemo } from 'react';
 
 type Props = {
   index: number;
 };
 
 const Component: FC<Props> = ({ index }) => {
-  const spaces = useRecoilValue(appSpacesState);
-  const spaceId = useRecoilValue(getHeadingSpaceIdState(index));
+  const spaces = useAtomValue(appSpacesAtom);
+  const spaceIdAtom = useMemo(() => getConditionSpaceIdAtom(index), [index]);
+  const [spaceId, setSpaceId] = useAtom(spaceIdAtom);
 
-  const onChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(headingRowState(index), (current) => ({ ...current, spaceId: value }));
-      },
-    [index]
-  );
+  const onChange = (value: string) => {
+    setSpaceId(value);
+  };
 
   return (
     <Autocomplete

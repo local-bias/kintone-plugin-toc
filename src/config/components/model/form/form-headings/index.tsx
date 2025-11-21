@@ -1,45 +1,35 @@
-import { IconButton, Tooltip } from '@mui/material';
-import React, { FC, memo } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { produce } from 'immer';
-import SpaceSelect from './space-select';
+import { IconButton, Tooltip } from '@mui/material';
+import { useAtom, useAtomValue } from 'jotai';
+import { FC, memo } from 'react';
 import ColorForm from './color';
 import LabelForm from './label';
+import SpaceSelect from './space-select';
 
-import { headingsLengthState, headingsState } from '../../../../states/plugin';
+import { DEFAULT_COLOR } from '@/lib/static';
+import { conditionsAtom, conditionsLengthAtom } from '../../../../states/plugin';
 
 const Component: FC = () => {
-  const length = useRecoilValue(headingsLengthState);
+  const length = useAtomValue(conditionsLengthAtom);
+  const [conditions, setConditions] = useAtom(conditionsAtom);
   const isMultiple = length > 1;
 
-  const addField = useRecoilCallback(
-    ({ set }) =>
-      (rowIndex: number) => {
-        set(headingsState, (current) =>
-          produce(current, (draft) => {
-            draft.splice(rowIndex + 1, 0, {
-              spaceId: '',
-              label: '',
-            });
-          })
-        );
-      },
-    []
-  );
+  const addField = (rowIndex: number) => {
+    const updated = [...conditions];
+    updated.splice(rowIndex + 1, 0, {
+      spaceId: '',
+      label: '見出し',
+      color: DEFAULT_COLOR,
+    });
+    setConditions(updated);
+  };
 
-  const removeField = useRecoilCallback(
-    ({ set }) =>
-      (rowIndex: number) => {
-        set(headingsState, (current) =>
-          produce(current, (draft) => {
-            draft.splice(rowIndex, 1);
-          })
-        );
-      },
-    []
-  );
+  const removeField = (rowIndex: number) => {
+    const updated = [...conditions];
+    updated.splice(rowIndex, 1);
+    setConditions(updated);
+  };
 
   return (
     <div className='flex flex-col gap-4'>

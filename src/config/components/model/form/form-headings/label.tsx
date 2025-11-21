@@ -1,20 +1,17 @@
-import { getHeadingLabelState, headingRowState } from '@/config/states/plugin';
+import { getConditionLabelAtom } from '@/config/states/plugin';
 import { TextField } from '@mui/material';
-import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { useAtom } from 'jotai';
+import { FC, useMemo } from 'react';
 
 type Props = { index: number };
 
 const Component: FC<Props> = ({ index }) => {
-  const label = useRecoilValue(getHeadingLabelState(index));
+  const labelAtom = useMemo(() => getConditionLabelAtom(index), [index]);
+  const [label, setLabel] = useAtom(labelAtom);
 
-  const onChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(headingRowState(index), (current) => ({ ...current, label: value }));
-      },
-    [index]
-  );
+  const onChange = (value: string) => {
+    setLabel(value);
+  };
 
   return (
     <TextField
