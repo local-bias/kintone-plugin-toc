@@ -1,9 +1,8 @@
-import React, { FC, useCallback } from 'react';
-import { useRecoilValue } from 'recoil';
-import { TextField, Autocomplete } from '@mui/material';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
-
-import { appFieldsState } from '../../../states/kintone';
+import { Autocomplete, TextField } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import { FC, useCallback } from 'react';
+import { appFieldsAtom } from '../../../states/kintone';
 
 type ContainerProps = {
   fieldCode: string;
@@ -31,7 +30,7 @@ const Component: FC<Props> = ({ fields, value, onFieldChange }) => (
 );
 
 const Container: FC<ContainerProps> = (props) => {
-  const fields = useRecoilValue(appFieldsState);
+  const fields = useAtomValue(appFieldsAtom);
 
   const value = fields.find((field) => field.code === props.fieldCode) ?? null;
 

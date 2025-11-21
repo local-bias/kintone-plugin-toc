@@ -1,46 +1,36 @@
-import { selector } from 'recoil';
+import { atom } from 'jotai';
+import { eagerAtom } from 'jotai-eager';
 import { flatLayout, getUserDefinedFields } from '@/lib/kintone-api';
 import { getFormLayout, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 
-const PREFIX = 'kintone';
+export const appFieldsAtom = atom(async () => {
+  const properties = await getUserDefinedFields({ preview: true, guestSpaceId: GUEST_SPACE_ID });
 
-export const appFieldsState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}appFieldsState`,
-  get: async () => {
-    const properties = await getUserDefinedFields({ preview: true, guestSpaceId: GUEST_SPACE_ID });
+  const values = Object.values(properties);
 
-    const values = Object.values(properties);
-
-    return values.sort((a, b) => a.label.localeCompare(b.label, 'ja'));
-  },
+  return values.sort((a, b) => a.label.localeCompare(b.label, 'ja'));
 });
 
-export const appLayoutState = selector<kintoneAPI.Layout>({
-  key: `${PREFIX}appLayoutState`,
-  get: async () => {
-    const app = getAppId();
-    if (!app) {
-      throw new Error('アプリのフィールド情報が取得できませんでした');
-    }
+export const appLayoutAtom = atom(async () => {
+  const app = getAppId();
+  if (!app) {
+    throw new Error('アプリのフィールド情報が取得できませんでした');
+  }
 
-    const { layout } = await getFormLayout({ app, preview: true, guestSpaceId: GUEST_SPACE_ID });
-    return layout;
-  },
+  const { layout } = await getFormLayout({ app, preview: true, guestSpaceId: GUEST_SPACE_ID });
+  return layout;
 });
 
-export const appSpacesState = selector<kintoneAPI.layout.Spacer[]>({
-  key: `${PREFIX}appSpacesState`,
-  get: ({ get }) => {
-    const layout = get(appLayoutState);
+export const appSpacesAtom = eagerAtom((get) => {
+  const layout = get(appLayoutAtom);
 
-    const fields = flatLayout(layout);
+  const fields = flatLayout(layout);
 
-    const spaces = fields.filter((field) => field.type === 'SPACER') as kintoneAPI.layout.Spacer[];
+  const spaces = fields.filter((field) => field.type === 'SPACER') as kintoneAPI.layout.Spacer[];
 
-    const filtered = spaces.filter((space) => space.elementId);
+  const filtered = spaces.filter((space) => space.elementId);
 
-    return filtered;
-  },
+  return filtered;
 });
