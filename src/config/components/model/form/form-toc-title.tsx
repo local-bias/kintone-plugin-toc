@@ -1,20 +1,15 @@
-import { Skeleton, TextField } from '@mui/material';
-import React, { ChangeEventHandler, FC, FCX, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-
-import { tocTitleState } from '../../../states/plugin';
 import styled from '@emotion/styled';
+import { Skeleton, TextField } from '@mui/material';
+import { useAtom } from 'jotai';
+import { ChangeEventHandler, FC, FCX, memo, Suspense } from 'react';
+import { tocTitleAtom } from '../../../states/plugin';
 
 const Component: FCX = ({ className }) => {
-  const value = useRecoilValue(tocTitleState);
+  const [value, setValue] = useAtom(tocTitleAtom);
 
-  const onChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
-    ({ set }) =>
-      ({ target }) => {
-        set(tocTitleState, target.value);
-      },
-    []
-  );
+  const onChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+    setValue(target.value);
+  };
 
   return (
     <div className={className}>
